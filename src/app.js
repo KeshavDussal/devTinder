@@ -2,12 +2,26 @@ const express = require("express");
 
 const app = express();
 //function inside use is known as request handler
-app.use("/", (req, res) => {
-  res.send("Namaste from the Dashboard!");
+app.use("/user", (req, res) => {
+  res.send("HAHAHAHAHH");
 });
-app.use("/hello", (req, res) => {
-  res.send("Hello Hello Hello Hello!");
+
+//But below will only handle get API calls.
+app.get("/user", (req, res) => {
+  res.send({ firstName: "Akshay", lastName: "Saini" });
 });
+
+app.post("/user", (req, res) => {
+  //Saving data to DB
+  res.send("Data Successfully saved to the database");
+});
+
+app.delete("/user", (req, res) => {
+  //Saving data to DB
+  res.send("Deleted Successfully");
+});
+
+//if you "use" This will match all the http method API calls to the /test.
 app.use("/test", (req, res) => {
   res.send("Hello from the server!");
 });
