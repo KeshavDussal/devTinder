@@ -2,7 +2,6 @@ const express = require("express");
 
 const app = express();
 
-//But below will only handle get API calls.
 app.get("/user/:userId/:name/:password", (req, res) => {
   console.log(req.params);
   res.send({ firstName: "Akshay", lastName: "Saini" });
