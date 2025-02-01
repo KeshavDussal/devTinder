@@ -1,20 +1,10 @@
 const express = require("express");
+const { adminAuth } = require("./middlewares/auth");
 
 const app = express();
 //Handle Auth Middleware for all GET,POST,DELETE,PATCH etc
 // Middleware - handled only for /admin not for /user
-app.use("/admin", (req, res, next) => {
-  console.log("Admin Auth checked");
-
-  const token = "xyz";
-  const isAdminAuthorized = token === "xyz";
-  if (!isAdminAuthorized) {
-    res.status(401).send("UnAuthorized Request");
-  }
-  else {
-    next();
-  }
-})
+app.use("/admin", adminAuth)
 
 app.get("/user", (req, res) => {
   res.send("User Data sent")
