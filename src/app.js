@@ -2,6 +2,7 @@ const express = require("express");
 
 const app = express();
 //Handle Auth Middleware for all GET,POST,DELETE,PATCH etc
+// Middleware - handled only for /admin not for /user
 app.use("/admin", (req, res, next) => {
   console.log("Admin Auth checked");
 
@@ -13,6 +14,10 @@ app.use("/admin", (req, res, next) => {
   else {
     next();
   }
+})
+
+app.get("/user", (req, res) => {
+  res.send("User Data sent")
 })
 
 app.get("/admin/getAllData", (req, res) => {
