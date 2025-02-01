@@ -1,33 +1,26 @@
 const express = require("express");
 
 const app = express();
+//Handle Auth Middleware for all GET,POST,DELETE,PATCH etc
+app.use("/admin", (req, res, next) => {
+  console.log("Admin Auth checked");
 
-app.get("/admin/getAllData", (req, res) => {
-  //Logic of checking authentication/authorized
   const token = "xyz";
   const isAdminAuthorized = token === "xyz";
-  if (isAdminAuthorized) {
-    //res.send - default status is 200
-    res.send("All data sent")
+  if (!isAdminAuthorized) {
+    res.status(401).send("UnAuthorized Request");
   }
   else {
-    //res.status - changing the default status to mentioned status
-    res.status(401).send("UnAuthorized Request");
+    next();
   }
 })
 
+app.get("/admin/getAllData", (req, res) => {
+  res.send("All data sent")
+})
+
 app.get("/admin/deleteUser", (req, res) => {
-  //Logic of checking authentication/authorized
-  const token = "xyz";
-  const isAdminAuthorized = token === "xyz";
-  if (isAdminAuthorized) {
-    //res.send - default status is 200
-    res.send("Deleted a user")
-  }
-  else {
-    //res.status - changing the default status to mentioned status
-    res.status(401).send("UnAuthorized Request");
-  }
+  res.send("Deleted a user")
 })
 app.listen(7777, () => {
   console.log("Server is succesfully listening on port 7777...");
