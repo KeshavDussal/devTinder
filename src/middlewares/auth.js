@@ -1,6 +1,5 @@
 const adminAuth = (req, res, next) => {
     console.log("Admin Auth checked");
-
     const token = "xyz";
     const isAdminAuthorized = token === "xyz";
     if (!isAdminAuthorized) {
@@ -14,7 +13,6 @@ const adminAuth = (req, res, next) => {
 
 const userAuth = (req, res, next) => {
     console.log("User Auth checked");
-
     const token = "xyz";
     const isUserAuthorized = token === "xyz";
     if (!isUserAuthorized) {
