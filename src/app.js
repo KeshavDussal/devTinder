@@ -1,12 +1,16 @@
 const express = require("express");
-const { adminAuth } = require("./middlewares/auth");
+const { adminAuth, userAuth } = require("./middlewares/auth");
 
 const app = express();
 //Handle Auth Middleware for all GET,POST,DELETE,PATCH etc
 // Middleware - handled only for /admin not for /user
 app.use("/admin", adminAuth)
 
-app.get("/user", (req, res) => {
+app.post("/user/login", (req, res) => {
+  res.send("User Logged in Successfully")
+})
+
+app.get("/user/data", userAuth, (req, res) => {
   res.send("User Data sent")
 })
 
