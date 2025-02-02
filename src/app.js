@@ -18,7 +18,7 @@ app.get("/getUserData", (req, res) => {
   //   res.status(500).send("Some Error Contact support team")
   // }
 })
-
+//This is backup error handler when some above error handling fails
 app.use("/", (err, req, res, next) => {
   if (err) {
     //Log your error
