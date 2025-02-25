@@ -1,7 +1,8 @@
 const express = require("express");
 const userRouter = express.Router();
 const { userAuth } = require("../middlewares/auth")
-const ConnectionRequest = require("../models/connectionRequest")
+const ConnectionRequest = require("../models/connectionRequest");
+const User = require("../models/user");
 const USER_SAFE_DATA = "firstName lastName photoUrl age gender about skills"
 //Get all the pending connection request for the loggedInUser
 userRouter.get("/user/requests/received", userAuth, async (req, res) => {
@@ -38,6 +39,43 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
             return row.fromUserId;
         })
         res.json({ message: "Data Fetched succesfully", data: data })
+    } catch (err) {
+        res.status(400).send("ERROR: " + err.message)
+    }
+})
+
+userRouter.get("/user/feed", userAuth, async (req, res) => {
+    try {
+        // User should see all other user cards except below
+        // 0. his own card
+        // 1. his connections
+        // 2. ignored people
+        // 3. already sent connection request to.
+        const loggedInUser = req.user;
+        const page = parseInt(req.query.page) || 1;
+        let limit = parseInt(req.query.limit) || 10;
+        limit = limit > 50 ? 50 : limit;
+        const skip = (page - 1) * limit;
+        //Find all connection request that I can (send + received)
+        const connectionRequests = await ConnectionRequest.find({
+            $or: [
+                { fromUserId: loggedInUser._id },
+                { toUserId: loggedInUser._id },
+            ]
+        }).select("fromUserId  toUserId")
+        const hideUsersFromFeed = new Set();
+        connectionRequests.forEach((req) => {
+            hideUsersFromFeed.add(req.fromUserId.toString())
+            hideUsersFromFeed.add(req.toUserId.toString())
+        })
+        console.log(hideUsersFromFeed);
+        const users = await User.find({
+            $and: [
+                { _id: { $nin: Array.from(hideUsersFromFeed) } },
+                { _id: { $ne: loggedInUser._id } }
+            ]
+        }).select(USER_SAFE_DATA).skip(skip).limit(limit)
+        res.json({ message: "Feed load successfully", data: users })
     } catch (err) {
         res.status(400).send("ERROR: " + err.message)
     }
